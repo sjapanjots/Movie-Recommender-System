@@ -33,7 +33,7 @@ try:
     df = pd.read_csv("movies.csv")
     logging.info("Dataset Loaded successfully. Total rows: %d", len(df))
 except Exception as e:
-    logging.error("Failed to load dtaset: %s", ster(e))
+    logging.error("Failed to load dtaset: %s", str(e))
     raise e
 
 
@@ -52,3 +52,26 @@ def preprocess_text(text):
     df = df.dropna().reset_index(drop=True)
 
     df['combined'] = df['genres'] + ' ' + df['kewords']
+
+    logging.info("Cleaning text")
+    df['cleaned_text'] = df['combined'].apply(preprocess_text)
+    logging.info("Text cleaned")
+
+    # Vectorization 
+    logging.info(" Victorizing using TF-IDF...")
+    tfidf = TfidfVectorizer(max_features=5000)
+    tfidf_matrix = tfidf.fit_transform(df['cleaned_text'])
+    logging.info("TF IDF matrix shape: %s", tfidf_matrix.shape)
+
+    # Cosine Similarity for recommendations 
+    logging.info("Calculating cosine similarity...")
+    cosine_sim = cosine_similarity(tfidf_matrix , tfidf_matrix)
+    logging.info("Cosine similarity matrix generated")
+
+    # Save everything 
+    joblib.dump(df , 'df_cleaned.pkl')
+    joblib.dunp(tfidf_matrix , 'tfidf_matrix.pkl')
+    joblib.dump(cousine_sim , 'cosine_sim.pkl')
+    logging.info("Data Saved to disk")
+
+    logging.info("Preprocessing complete")
