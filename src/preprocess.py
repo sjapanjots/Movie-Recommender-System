@@ -70,7 +70,7 @@ logging.info("📐 Calculating cosine similarity...")
 cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)
 logging.info("✅ Cosine similarity matrix generated.")
 
-# Save everything
+# Save everythingg
 joblib.dump(df, 'df_cleaned.pkl')
 joblib.dump(tfidf_matrix, 'tfidf_matrix.pkl')
 joblib.dump(cosine_sim, 'cosine_sim.pkl')
