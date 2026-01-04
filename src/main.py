@@ -1,14 +1,9 @@
-import os
 import streamlit as st
-from dotenv import load_dotenv
 from recommend import df, recommend_movies
 from omdb_utils import get_movie_details
 
-# Load .env for local development
-load_dotenv()
-
-# Get API key (works locally + Streamlit Cloud)
-OMDB_API_KEY = os.getenv("OMDB_API_KEY") or st.secrets.get("OMDB_API_KEY")
+# Get OMDB API key from Streamlit Secrets
+OMDB_API_KEY = st.secrets.get("OMDB_API_KEY")
 
 if not OMDB_API_KEY:
     st.error("OMDB API key not found. Please configure it in Streamlit Secrets.")
@@ -23,7 +18,7 @@ st.set_page_config(
 st.title("🎬 Movie Recommender")
 
 # Movie selection
-movie_list = sorted(df['title'].dropna().unique())
+movie_list = sorted(df["title"].dropna().unique())
 selected_movie = st.selectbox("🎬 Select a movie:", movie_list)
 
 if st.button("🚀 Recommend Similar Movies"):
@@ -36,7 +31,7 @@ if st.button("🚀 Recommend Similar Movies"):
             st.success("Top similar movies:")
 
             for _, row in recommendations.iterrows():
-                movie_title = row['title']
+                movie_title = row["title"]
                 plot, poster = get_movie_details(movie_title, OMDB_API_KEY)
 
                 with st.container():
